@@ -116,9 +116,7 @@ function Songs() {
 function Song() {
   let { id } = useParams();
   const currentSong = songList.filter(song => song.id === id);
-  console.log(currentSong);
-  const relatedSong = songList.filter(song => song.author === currentSong.author && song.id !== id);
-  console.log(relatedSong);
+  const currentAuthor = currentSong[0].author;
   return (
     <div>
       {songList.filter(function(song){return song.id === id}).map(song => (
@@ -128,8 +126,8 @@ function Song() {
           <h3>Published at: {song.publishedDate}</h3>
           <h3>Short lyric: {song.lyric}</h3>
           <h3>Other songs of {song.author}: </h3>
-          {relatedSong.map(relasong => (
-            <h3 key={relasong.id}><Link to={`${relasong.id}`}>{relasong.title}</Link></h3>
+          {songList.filter(song => song.author === currentAuthor && song.id !== id).map(song => (
+            <h3 key={song.id}><Link to={`${song.id}`}>{song.title}</Link></h3>
           ))}
         </div>
       ))}
