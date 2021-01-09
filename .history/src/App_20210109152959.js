@@ -5,9 +5,6 @@ import {
   Switch,
   Route,
   Link,
-  useRouteMatch,
-  useParams,
-  useHistory 
 } from "react-router-dom";
 import songList from "./song";
 
@@ -36,11 +33,8 @@ function App() {
           <Route path="/add">
             <Add />
           </Route>
-          <Route exact path="/songs">
+          <Route path="/songs">
             <Songs />
-          </Route>
-          <Route path="/songs/:id">
-            <Song />
           </Route>
         </Switch>
       </div>
@@ -57,7 +51,6 @@ function Home() {
 }
 
 function Add() {
-  const history = useHistory();
   const inputTitle = useRef();
   const inputAuthor = useRef();
   const inputPublishDate = useRef();
@@ -71,8 +64,7 @@ function Add() {
     const lyric = inputLyric.current.value;
     const id = Math.floor(Math.random() * 100);
     songList.push({id:id.toString(),author:author,publishedDate:publishDate,title:title,lyric:lyric});
-    alert("Add successful !");
-    history.push(`/songs/${id}`);
+    console.log(songList);
   }
 
   return (
@@ -90,50 +82,14 @@ function Add() {
 }
 
 function Songs() {
-  let { path, url } = useRouteMatch();
-
   return (
     <div>
       {songList.sort((a,b) => {
         return new Date(b.publishedDate) - new Date(a.publishedDate)
       }).map(song => (
-        <h3 key={song.id}><Link to={`${url}/${song.id}`}>{song.title}</Link></h3>  
+        <h3 key={song.id}>{song.title}</h3>  
       ))}
-
-      <Switch>
-        <Route exact path={path}>
-          <h3>Please select a song.</h3>
-        </Route>
-        <Route path={`${path}/:id`}>
-          <Song />
-        </Route>  
-      </Switch>
-    </div>
-    
-  );
-}
-
-function Song() {
-  let { id } = useParams();
-  const currentSong = songList.filter(song => song.id === id);
-  console.log(currentSong);
-  const relatedSong = songList.filter(song => song.author === currentSong.author && song.id !== id);
-  console.log(relatedSong);
-  return (
-    <div>
-      {songList.filter(function(song){return song.id === id}).map(song => (
-        <div key={song.id}>
-          <h3>Title: {song.title}</h3>
-          <h3>Author: {song.author}</h3>
-          <h3>Published at: {song.publishedDate}</h3>
-          <h3>Short lyric: {song.lyric}</h3>
-          <h3>Other songs of {song.author}: </h3>
-          {relatedSong.map(relasong => (
-            <h3 key={relasong.id}><Link to={`${relasong.id}`}>{relasong.title}</Link></h3>
-          ))}
-        </div>
-      ))}
-    </div>
+    </div> 
   );
 }
 
